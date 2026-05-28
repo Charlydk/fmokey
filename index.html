@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La 101.9 Radio Okey | La Radio Oficial de los Artistas</title>
+    <meta name="description" content="Radio Okey 101.9 FM — La radio oficial de los artistas. Escuchanos en vivo desde Tucumán para todo el mundo.">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'ok-yellow': '#F5C400',
+                        'ok-black': '#0a0a0a',
+                        'ok-dark':  '#111111',
+                        'ok-card':  '#1a1a1a',
+                    },
+                    fontFamily: {
+                        display: ['"Bebas Neue"', 'sans-serif'],
+                        body: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            color: white;
+            padding-bottom: 80px; /* space for sticky player */
+        }
+
+        /* ---- NAVBAR ---- */
+        #navbar { transition: background 0.4s ease, box-shadow 0.4s ease; }
+        #navbar.scrolled {
+            background: rgba(10, 10, 10, 0.97) !important;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 1px 0 rgba(245,196,0,0.15);
+        }
+
+        /* ---- WAVE ANIMATION ---- */
+        @keyframes wave {
+            0%, 100% { transform: scaleY(0.35); }
+            50%       { transform: scaleY(1); }
+        }
+        .wave-bar { animation: wave 1.2s ease-in-out infinite; transform-origin: bottom; }
+        .wave-bar:nth-child(1) { animation-delay: 0s; }
+        .wave-bar:nth-child(2) { animation-delay: 0.15s; }
+        .wave-bar:nth-child(3) { animation-delay: 0.30s; }
+        .wave-bar:nth-child(4) { animation-delay: 0.15s; }
+        .wave-bar:nth-child(5) { animation-delay: 0s; }
+        .wave-paused .wave-bar { animation-play-state: paused; }
+
+        /* ---- LIVE DOT PULSE ---- */
+        @keyframes livePulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.7); }
+            50%       { box-shadow: 0 0 0 6px rgba(239,68,68,0); }
+        }
+        .live-dot { animation: livePulse 2s ease infinite; }
+
+        /* ---- GLOW ---- */
+        .yellow-glow { box-shadow: 0 0 30px rgba(245,196,0,0.35); }
+
+        /* ---- FADE IN ON SCROLL ---- */
+        .fade-in { opacity: 0; transform: translateY(24px); transition: opacity 0.65s ease, transform 0.65s ease; }
+        .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+        /* ---- PROGRAM CARD HOVER ---- */
+        .program-card { transition: transform 0.3s ease; }
+        .program-card:hover { transform: translateY(-6px); }
+        .program-overlay { opacity: 0; transition: opacity 0.3s ease; }
+        .program-card:hover .program-overlay { opacity: 1; }
+
+        /* ---- PLATFORM CARD ---- */
+        .platform-card { transition: transform 0.3s ease, border-color 0.3s ease; }
+        .platform-card:hover { transform: translateY(-5px); }
+
+        /* ---- RANGE INPUT ---- */
+        input[type='range'] {
+            -webkit-appearance: none;
+            appearance: none;
+            height: 4px;
+            background: #333;
+            border-radius: 4px;
+            outline: none;
+            cursor: pointer;
+        }
+        input[type='range']::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #F5C400;
+            cursor: pointer;
+        }
+
+        /* ---- SCROLLBAR ---- */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #111; }
+        ::-webkit-scrollbar-thumb { background: #F5C400; border-radius: 2px; }
+    </style>
+</head>
+
+<body class="bg-ok-black">
+
+<!-- ================================================================
+     NAVBAR
+     ================================================================ -->
+<nav id="navbar" class="fixed top-0 left-0 right-0 z-50 py-4 px-6 bg-transparent">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-6">
+
+        <!-- Logo -->
+        <a href="#inicio" class="flex-shrink-0">
+            <img src="recursos/WhatsApp%20Image%202026-05-27%20at%2014.36.17.jpeg"
+                 alt="Radio Okey 101.9"
+                 class="h-14 w-auto">
+        </a>
+
+        <!-- Nav links (desktop) -->
+        <div class="hidden md:flex items-center gap-8">
+            <a href="#inicio"      class="text-sm font-semibold text-white/70 hover:text-[#F5C400] transition-colors tracking-wide">INICIO</a>
+            <a href="#en-vivo"     class="text-sm font-semibold text-white/70 hover:text-[#F5C400] transition-colors tracking-wide">EN VIVO</a>
+            <a href="#programas"   class="text-sm font-semibold text-white/70 hover:text-[#F5C400] transition-colors tracking-wide">PROGRAMAS</a>
+            <a href="#plataformas" class="text-sm font-semibold text-white/70 hover:text-[#F5C400] transition-colors tracking-wide">ESCUCHANOS</a>
+            <a href="#contacto"    class="text-sm font-semibold text-white/70 hover:text-[#F5C400] transition-colors tracking-wide">CONTACTO</a>
+        </div>
+
+        <!-- Right: social + CTA -->
+        <div class="flex items-center gap-4">
+            <a href="#" aria-label="Instagram" class="text-white/60 hover:text-[#F5C400] transition-colors hidden sm:block">
+                <i class="fab fa-instagram text-xl"></i>
+            </a>
+            <a href="#" aria-label="Facebook" class="text-white/60 hover:text-[#F5C400] transition-colors hidden sm:block">
+                <i class="fab fa-facebook-f text-xl"></i>
+            </a>
+            <a href="#" aria-label="YouTube" class="text-white/60 hover:text-[#F5C400] transition-colors hidden sm:block">
+                <i class="fab fa-youtube text-xl"></i>
+            </a>
+            <a href="https://wa.me/5493815462987" target="_blank" rel="noopener"
+               class="hidden md:flex items-center gap-2 bg-[#F5C400] text-black text-sm font-bold px-5 py-2.5 rounded-full hover:bg-yellow-300 transition-colors">
+                <i class="fab fa-whatsapp"></i>
+                WhatsApp
+            </a>
+            <!-- Mobile hamburger -->
+            <button id="mobileMenuBtn" class="md:hidden text-white text-xl" aria-label="Menu">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Mobile menu -->
+    <div id="mobileMenu" class="hidden md:hidden mt-4 bg-ok-dark rounded-2xl p-5 mx-2 border border-white/5">
+        <div class="flex flex-col gap-5">
+            <a href="#inicio"      class="text-sm font-semibold text-white/70 hover:text-[#F5C400]">INICIO</a>
+            <a href="#en-vivo"     class="text-sm font-semibold text-white/70 hover:text-[#F5C400]">EN VIVO</a>
+            <a href="#programas"   class="text-sm font-semibold text-white/70 hover:text-[#F5C400]">PROGRAMAS</a>
+            <a href="#plataformas" class="text-sm font-semibold text-white/70 hover:text-[#F5C400]">ESCUCHANOS</a>
+            <a href="#contacto"    class="text-sm font-semibold text-white/70 hover:text-[#F5C400]">CONTACTO</a>
+            <a href="https://wa.me/5493815462987" target="_blank" rel="noopener"
+               class="flex items-center justify-center gap-2 bg-[#F5C400] text-black text-sm font-bold px-5 py-3 rounded-full">
+                <i class="fab fa-whatsapp"></i> WhatsApp
+            </a>
+        </div>
+    </div>
+</nav>
+
+
+<!-- ================================================================
+     HERO
+     ================================================================ -->
+<section id="inicio" class="relative min-h-screen flex items-center justify-center overflow-hidden">
+
+    <!-- Background: artist banner with dark overlay -->
+    <div class="absolute inset-0">
+        <img src="recursos/WhatsApp%20Image%202026-05-27%20at%2014.39.48.jpeg"
+             alt=""
+             class="w-full h-full object-cover object-center opacity-25"
+             loading="eager">
+        <div class="absolute inset-0 bg-gradient-to-b from-ok-black/70 via-ok-black/50 to-ok-black"></div>
+        <!-- Subtle yellow radial glow from center -->
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(245,196,0,0.07)_0%,transparent_70%)]"></div>
+    </div>
+
+    <!-- Content -->
+    <div class="relative z-10 text-center px-6 max-w-4xl mx-auto pt-24">
+
+        <!-- Live badge -->
+        <div class="inline-flex items-center gap-2 bg-red-600/90 text-white text-xs font-bold px-4 py-2 rounded-full mb-10 tracking-widest uppercase">
+            <span class="w-2 h-2 bg-white rounded-full live-dot"></span>
+            Transmitiendo en vivo
+        </div>
+
+        <!-- Station name -->
+        <h1 class="font-display text-8xl md:text-[11rem] text-white leading-none tracking-wide mb-0">
+            LA 101.9
+        </h1>
+        <h2 class="font-display text-5xl md:text-7xl text-[#F5C400] leading-none tracking-widest mb-6">
+            RADIO OKEY
+        </h2>
+        <p class="text-base md:text-lg text-white/60 mb-12 font-light tracking-wider uppercase">
+            La radio oficial de los artistas
+        </p>
+
+        <!-- CTAs -->
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <button onclick="togglePlay()"
+                    class="flex items-center gap-3 bg-[#F5C400] text-black font-bold px-9 py-4 rounded-full text-lg hover:bg-yellow-300 transition-all hover:scale-105 yellow-glow">
+                <i class="fas fa-play text-sm"></i>
+                Escuchar en vivo
+            </button>
+            <a href="#en-vivo"
+               class="flex items-center gap-3 border-2 border-white/25 text-white font-semibold px-9 py-4 rounded-full text-lg hover:border-[#F5C400] hover:text-[#F5C400] transition-all">
+                <i class="fas fa-video text-sm"></i>
+                Ver transmisión
+            </a>
+        </div>
+    </div>
+
+    <!-- Scroll hint -->
+    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 text-white/30 animate-bounce">
+        <i class="fas fa-chevron-down text-lg"></i>
+    </div>
+</section>
+
+
+<!-- ================================================================
+     EN VIVO
+     ================================================================ -->
+<section id="en-vivo" class="py-24 px-6">
+    <div class="max-w-7xl mx-auto">
+
+        <!-- Section header -->
+        <div class="flex items-center gap-4 mb-14 fade-in">
+            <div class="flex items-center gap-3">
+                <span class="w-3 h-3 bg-red-500 rounded-full live-dot flex-shrink-0"></span>
+                <span class="font-display text-4xl text-white tracking-widest">EN VIVO</span>
+            </div>
+            <div class="h-px flex-1 bg-white/10"></div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 fade-in">
+
+            <!-- ---- VIDEO PLAYER (3/5) ---- -->
+            <div class="lg:col-span-3">
+                <div class="relative bg-ok-card rounded-2xl overflow-hidden border border-white/5" style="aspect-ratio:16/9;">
+
+                    <!-- Placeholder — replace with EstudioMax embed when available -->
+                    <div id="videoPlaceholder" class="absolute inset-0 flex flex-col items-center justify-center px-8 text-center">
+                        <div class="w-20 h-20 rounded-full bg-[#F5C400]/10 border-2 border-[#F5C400]/20 flex items-center justify-center mb-6">
+                            <i class="fas fa-video text-[#F5C400] text-3xl"></i>
+                        </div>
+                        <h3 class="font-display text-3xl text-white tracking-wider mb-2">TRANSMISIÓN DE VIDEO</h3>
+                        <p class="text-white/40 text-sm max-w-xs">
+                            La cámara del estudio estará disponible próximamente.
+                        </p>
+                    </div>
+
+                    <!--
+                    VIDEO EMBED — descomentar cuando tengamos la URL de EstudioMax:
+                    <iframe
+                        id="videoEmbed"
+                        src="ESTUDIOSMAX_VIDEO_EMBED_URL"
+                        class="absolute inset-0 w-full h-full"
+                        frameborder="0"
+                        allowfullscreen
+                        allow="autoplay">
+                    </iframe>
+                    -->
+
+                    <!-- Live badge overlay -->
+                    <div class="absolute top-4 left-4 flex items-center gap-2 bg-black/60 backdrop-blur-sm px-3 py-1.5 rounded-full">
+                        <span class="w-2 h-2 bg-red-500 rounded-full live-dot"></span>
+                        <span class="text-white text-xs font-bold tracking-wider">EN VIVO</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ---- AUDIO PLAYER + SOCIALS (2/5) ---- -->
+            <div class="lg:col-span-2 flex flex-col gap-6">
+
+                <!-- Now playing card -->
+                <div class="bg-ok-card rounded-2xl p-7 border border-white/5 flex flex-col flex-1">
+
+                    <!-- Wave + label -->
+                    <div class="flex items-center gap-3 mb-7">
+                        <div id="sectionWave" class="flex items-end gap-0.5 h-6 wave-paused">
+                            <div class="wave-bar w-1 bg-[#F5C400] rounded-full h-full"></div>
+                            <div class="wave-bar w-1 bg-[#F5C400] rounded-full h-full"></div>
+                            <div class="wave-bar w-1 bg-[#F5C400] rounded-full h-full"></div>
+                            <div class="wave-bar w-1 bg-[#F5C400] rounded-full h-full"></div>
+                            <div class="wave-bar w-1 bg-[#F5C400] rounded-full h-full"></div>
+                        </div>
+                        <span class="text-white/50 text-sm font-semibold tracking-wider uppercase">En el aire ahora</span>
+                    </div>
+
+                    <!-- Station info -->
+                    <div class="flex items-center gap-4 mb-8">
+                        <div class="w-16 h-16 rounded-xl overflow-hidden border border-[#F5C400]/20 flex-shrink-0">
+                            <img src="recursos/WhatsApp%20Image%202026-05-27%20at%2014.36.17.jpeg"
+                                 alt="Radio Okey" class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-white text-xl leading-tight">Radio Okey 101.9</h3>
+                            <p class="text-white/40 text-sm mt-0.5">La radio oficial de los artistas</p>
+                        </div>
+                    </div>
+
+                    <!-- Play button -->
+                    <div class="flex justify-center mb-8">
+                        <button onclick="togglePlay()" id="mainPlayBtn"
+                                class="w-20 h-20 rounded-full bg-[#F5C400] flex items-center justify-center hover:bg-yellow-300 transition-all hover:scale-105 yellow-glow">
+                            <i class="fas fa-play text-black text-2xl ml-1" id="mainPlayIcon"></i>
+                        </button>
+                    </div>
+
+                    <!-- Volume -->
+                    <div class="flex items-center gap-3 mt-auto">
+                        <i class="fas fa-volume-down text-white/30 text-sm w-4"></i>
+                        <input type="range" class="flex-1" min="0" max="1" step="0.05" value="0.8"
+                               oninput="setVolume(this.value)" id="volumeMain">
+                        <i class="fas fa-volume-up text-white/30 text-sm w-4"></i>
+                    </div>
+                </div>
+
+                <!-- Social links -->
+                <div class="bg-ok-card rounded-2xl p-5 border border-white/5">
+                    <p class="text-white/30 text-xs font-semibold tracking-widest uppercase mb-4">Seguinos en</p>
+                    <div class="grid grid-cols-3 gap-3">
+                        <a href="#" class="flex flex-col items-center gap-2 py-3 rounded-xl bg-gradient-to-br from-purple-600 to-pink-500 hover:scale-105 transition-transform">
+                            <i class="fab fa-instagram text-white text-xl"></i>
+                            <span class="text-white text-xs">Instagram</span>
+                        </a>
+                        <a href="#" class="flex flex-col items-center gap-2 py-3 rounded-xl bg-[#1877F2] hover:scale-105 transition-transform">
+                            <i class="fab fa-facebook-f text-white text-xl"></i>
+                            <span class="text-white text-xs">Facebook</span>
+                        </a>
+                        <a href="#" class="flex flex-col items-center gap-2 py-3 rounded-xl bg-[#FF0000] hover:scale-105 transition-transform">
+                            <i class="fab fa-youtube text-white text-xl"></i>
+                            <span class="text-white text-xs">YouTube</span>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ================================================================
+     PROGRAMAS
+     ================================================================ -->
+<section id="programas" class="py-24 px-6 bg-ok-dark">
+    <div class="max-w-7xl mx-auto">
+
+        <div class="flex items-center gap-4 mb-14 fade-in">
+            <span class="font-display text-4xl text-white tracking-widest">PROGRAMAS</span>
+            <div class="h-px flex-1 bg-white/10"></div>
+            <a href="#" class="text-[#F5C400] text-sm font-semibold hover:underline tracking-wide">Ver todos →</a>
+        </div>
+
+        <!-- Program grid — replace content with real show data -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 fade-in">
+
+            <div class="program-card bg-ok-card rounded-2xl overflow-hidden border border-white/5 cursor-pointer">
+                <div class="relative bg-gradient-to-br from-yellow-600/25 to-black flex items-center justify-center" style="aspect-ratio:1">
+                    <i class="fas fa-microphone text-[#F5C400]/25 text-6xl"></i>
+                    <div class="program-overlay absolute inset-0 bg-[#F5C400]/10 flex items-center justify-center">
+                        <div class="w-14 h-14 rounded-full bg-[#F5C400] flex items-center justify-center shadow-xl">
+                            <i class="fas fa-play text-black text-lg ml-0.5"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-5">
+                    <p class="text-[#F5C400] text-xs font-bold tracking-wider mb-2">LUN–VIE · 08:00–12:00</p>
+                    <h3 class="font-bold text-white text-lg leading-tight mb-2">El Despertador</h3>
+                    <p class="text-white/45 text-sm leading-relaxed">Empezá el día con la mejor música y las últimas novedades.</p>
+                </div>
+            </div>
+
+            <div class="program-card bg-ok-card rounded-2xl overflow-hidden border border-white/5 cursor-pointer">
+                <div class="relative bg-gradient-to-br from-blue-600/25 to-black flex items-center justify-center" style="aspect-ratio:1">
+                    <i class="fas fa-headphones text-blue-400/25 text-6xl"></i>
+                    <div class="program-overlay absolute inset-0 bg-[#F5C400]/10 flex items-center justify-center">
+                        <div class="w-14 h-14 rounded-full bg-[#F5C400] flex items-center justify-center shadow-xl">
+                            <i class="fas fa-play text-black text-lg ml-0.5"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-5">
+                    <p class="text-[#F5C400] text-xs font-bold tracking-wider mb-2">LUN–VIE · 12:00–16:00</p>
+                    <h3 class="font-bold text-white text-lg leading-tight mb-2">Al Mediodía</h3>
+                    <p class="text-white/45 text-sm leading-relaxed">El mejor acompañante para tu almuerzo. Hits y humor.</p>
+                </div>
+            </div>
+
+            <div class="program-card bg-ok-card rounded-2xl overflow-hidden border border-white/5 cursor-pointer">
+                <div class="relative bg-gradient-to-br from-red-600/25 to-black flex items-center justify-center" style="aspect-ratio:1">
+                    <i class="fas fa-music text-red-400/25 text-6xl"></i>
+                    <div class="program-overlay absolute inset-0 bg-[#F5C400]/10 flex items-center justify-center">
+                        <div class="w-14 h-14 rounded-full bg-[#F5C400] flex items-center justify-center shadow-xl">
+                            <i class="fas fa-play text-black text-lg ml-0.5"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-5">
+                    <p class="text-[#F5C400] text-xs font-bold tracking-wider mb-2">LUN–VIE · 16:00–20:00</p>
+                    <h3 class="font-bold text-white text-lg leading-tight mb-2">La Tarde</h3>
+                    <p class="text-white/45 text-sm leading-relaxed">Música y entretenimiento para acompañar tu tarde.</p>
+                </div>
+            </div>
+
+            <div class="program-card bg-ok-card rounded-2xl overflow-hidden border border-white/5 cursor-pointer">
+                <div class="relative bg-gradient-to-br from-purple-600/25 to-black flex items-center justify-center" style="aspect-ratio:1">
+                    <i class="fas fa-star text-purple-400/25 text-6xl"></i>
+                    <div class="program-overlay absolute inset-0 bg-[#F5C400]/10 flex items-center justify-center">
+                        <div class="w-14 h-14 rounded-full bg-[#F5C400] flex items-center justify-center shadow-xl">
+                            <i class="fas fa-play text-black text-lg ml-0.5"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-5">
+                    <p class="text-[#F5C400] text-xs font-bold tracking-wider mb-2">LUN–VIE · 20:00–00:00</p>
+                    <h3 class="font-bold text-white text-lg leading-tight mb-2">La Noche</h3>
+                    <p class="text-white/45 text-sm leading-relaxed">Los mejores hits para cerrar el día a puro ritmo.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<!-- ================================================================
+     PLATAFORMAS
+     ================================================================ -->
+<section id="plataformas" class="py-24 px-6">
+    <div class="max-w-7xl mx-auto">
+
+        <div class="text-center mb-14 fade-in">
+            <span class="font-display text-4xl md:text-5xl text-white tracking-wider">ESCUCHANOS EN TODAS LAS PLATAFORMAS</span>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-center gap-5 fade-in">
+
+            <a href="#" class="platform-card flex items-center gap-4 bg-ok-card px-8 py-5 rounded-2xl border border-white/5 hover:border-[#1DB954]/40 min-w-[160px]">
+                <i class="fab fa-spotify text-[#1DB954] text-3xl flex-shrink-0"></i>
+                <span class="text-white font-semibold">Spotify</span>
+            </a>
+
+            <a href="#" class="platform-card flex items-center gap-4 bg-ok-card px-8 py-5 rounded-2xl border border-white/5 hover:border-[#FF0000]/40 min-w-[160px]">
+                <i class="fab fa-youtube text-[#FF0000] text-3xl flex-shrink-0"></i>
+                <span class="text-white font-semibold">YouTube</span>
+            </a>
+
+            <a href="#" class="platform-card flex items-center gap-4 bg-ok-card px-8 py-5 rounded-2xl border border-white/5 hover:border-[#9146FF]/40 min-w-[160px]">
+                <i class="fab fa-twitch text-[#9146FF] text-3xl flex-shrink-0"></i>
+                <span class="text-white font-semibold">Twitch</span>
+            </a>
+
+            <a href="#" class="platform-card flex items-center gap-4 bg-ok-card px-8 py-5 rounded-2xl border border-white/5 hover:border-[#F5C400]/40 min-w-[160px]">
+                <i class="fas fa-radio text-[#F5C400] text-3xl flex-shrink-0"></i>
+                <span class="text-white font-semibold">TuneIn</span>
+            </a>
+
+            <a href="#" class="platform-card flex items-center gap-4 bg-ok-card px-8 py-5 rounded-2xl border border-white/5 hover:border-blue-400/40 min-w-[160px]">
+                <i class="fas fa-broadcast-tower text-blue-400 text-3xl flex-shrink-0"></i>
+                <span class="text-white font-semibold">Simple Radio</span>
+            </a>
+
+        </div>
+    </div>
+</section>
+
+
+<!-- ================================================================
+     CONTACTO / FOOTER
+     ================================================================ -->
+<section id="contacto" class="py-24 px-6 bg-ok-dark border-t border-white/5">
+    <div class="max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-14 fade-in">
+
+            <!-- Brand column -->
+            <div>
+                <img src="recursos/WhatsApp%20Image%202026-05-27%20at%2014.36.17.jpeg"
+                     alt="Radio Okey 101.9" class="h-20 mb-6">
+                <p class="text-white/45 text-sm leading-relaxed">
+                    La radio oficial de los artistas. Música, entretenimiento y los mejores contenidos de Tucumán para todo el mundo.
+                </p>
+            </div>
+
+            <!-- Contact column -->
+            <div>
+                <h4 class="font-display text-2xl text-white tracking-widest mb-7">CONTACTO</h4>
+                <div class="flex flex-col gap-5">
+                    <a href="https://wa.me/5493815462987" target="_blank" rel="noopener"
+                       class="flex items-center gap-4 text-white/55 hover:text-[#F5C400] transition-colors group">
+                        <span class="w-9 h-9 rounded-full bg-[#25D366]/10 flex items-center justify-center group-hover:bg-[#25D366]/20 transition-colors">
+                            <i class="fab fa-whatsapp text-[#25D366]"></i>
+                        </span>
+                        <span class="text-sm">+54 9 381 546-2987</span>
+                    </a>
+                    <a href="mailto:contacto@radiookey.com.ar"
+                       class="flex items-center gap-4 text-white/55 hover:text-[#F5C400] transition-colors group">
+                        <span class="w-9 h-9 rounded-full bg-[#F5C400]/10 flex items-center justify-center group-hover:bg-[#F5C400]/20 transition-colors">
+                            <i class="fas fa-envelope text-[#F5C400] text-sm"></i>
+                        </span>
+                        <span class="text-sm">contacto@radiookey.com.ar</span>
+                    </a>
+                    <div class="flex items-center gap-4 text-white/55">
+                        <span class="w-9 h-9 rounded-full bg-[#F5C400]/10 flex items-center justify-center">
+                            <i class="fas fa-map-marker-alt text-[#F5C400] text-sm"></i>
+                        </span>
+                        <span class="text-sm">Tucumán, Argentina</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Social column -->
+            <div>
+                <h4 class="font-display text-2xl text-white tracking-widest mb-7">SEGUINOS</h4>
+                <div class="flex flex-wrap gap-3">
+                    <a href="#" aria-label="Instagram"
+                       class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-600 to-pink-500 flex items-center justify-center hover:scale-110 transition-transform">
+                        <i class="fab fa-instagram text-white text-xl"></i>
+                    </a>
+                    <a href="#" aria-label="Facebook"
+                       class="w-12 h-12 rounded-xl bg-[#1877F2] flex items-center justify-center hover:scale-110 transition-transform">
+                        <i class="fab fa-facebook-f text-white text-xl"></i>
+                    </a>
+                    <a href="#" aria-label="YouTube"
+                       class="w-12 h-12 rounded-xl bg-[#FF0000] flex items-center justify-center hover:scale-110 transition-transform">
+                        <i class="fab fa-youtube text-white text-xl"></i>
+                    </a>
+                    <a href="#" aria-label="Twitch"
+                       class="w-12 h-12 rounded-xl bg-[#9146FF] flex items-center justify-center hover:scale-110 transition-transform">
+                        <i class="fab fa-twitch text-white text-xl"></i>
+                    </a>
+                    <a href="https://wa.me/5493815462987" target="_blank" rel="noopener" aria-label="WhatsApp"
+                       class="w-12 h-12 rounded-xl bg-[#25D366] flex items-center justify-center hover:scale-110 transition-transform">
+                        <i class="fab fa-whatsapp text-white text-xl"></i>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Copyright bar -->
+        <div class="mt-14 pt-6 border-t border-white/5 text-center text-white/25 text-sm">
+            © 2026 Radio Okey 101.9 FM — Todos los derechos reservados
+        </div>
+    </div>
+</section>
+
+
+<!-- ================================================================
+     STICKY AUDIO PLAYER (always visible)
+     ================================================================ -->
+<div id="stickyPlayer"
+     class="fixed bottom-0 left-0 right-0 bg-ok-black/95 border-t border-[#F5C400]/15 z-50 px-5 py-3 backdrop-blur-xl">
+    <div class="max-w-7xl mx-auto flex items-center gap-4">
+
+        <!-- Logo (desktop) -->
+        <img src="recursos/WhatsApp%20Image%202026-05-27%20at%2014.36.17.jpeg"
+             alt="" class="h-10 w-auto hidden sm:block flex-shrink-0">
+
+        <!-- Live + station info -->
+        <div class="flex items-center gap-3 flex-1 min-w-0">
+            <div class="flex items-center gap-1.5 flex-shrink-0">
+                <span class="w-2 h-2 bg-red-500 rounded-full live-dot"></span>
+                <span class="text-red-400 text-xs font-bold tracking-wider hidden sm:block">EN VIVO</span>
+            </div>
+            <div class="min-w-0">
+                <p class="text-white text-sm font-semibold truncate">Radio Okey 101.9</p>
+                <p class="text-white/35 text-xs truncate">La radio oficial de los artistas</p>
+            </div>
+        </div>
+
+        <!-- Wave (shown when playing) -->
+        <div id="playerWave" class="hidden items-end gap-0.5 h-5 flex-shrink-0">
+            <div class="wave-bar w-1 bg-[#F5C400] rounded-full h-full"></div>
+            <div class="wave-bar w-1 bg-[#F5C400] rounded-full h-full"></div>
+            <div class="wave-bar w-1 bg-[#F5C400] rounded-full h-full"></div>
+            <div class="wave-bar w-1 bg-[#F5C400] rounded-full h-full"></div>
+            <div class="wave-bar w-1 bg-[#F5C400] rounded-full h-full"></div>
+        </div>
+
+        <!-- Play/Pause -->
+        <button onclick="togglePlay()" id="stickyPlayBtn"
+                class="w-12 h-12 rounded-full bg-[#F5C400] flex items-center justify-center hover:bg-yellow-300 transition-all hover:scale-105 flex-shrink-0">
+            <i class="fas fa-play text-black text-sm ml-0.5" id="stickyPlayIcon"></i>
+        </button>
+
+        <!-- Volume (desktop) -->
+        <div class="hidden md:flex items-center gap-2 flex-shrink-0 w-28">
+            <i class="fas fa-volume-up text-white/30 text-sm"></i>
+            <input type="range" class="flex-1" min="0" max="1" step="0.05" value="0.8"
+                   oninput="setVolume(this.value)" id="volumeSticky">
+        </div>
+
+    </div>
+</div>
+
+<!-- Audio element -->
+<!-- TODO: replace the src with the EstudioMax stream URL once available -->
+<audio id="radioStream" preload="none"></audio>
+
+
+<!-- ================================================================
+     JAVASCRIPT
+     ================================================================ -->
+<script>
+    // ── STREAM URL ──────────────────────────────────────────────────
+    // Replace this with the actual EstudioMax Icecast/SHOUTcast URL
+    // e.g. 'http://servidor.estudiosmax.com.ar:8080/stream'
+    const STREAM_URL = 'http://streaming01.shockmedia.com.ar:8122/stream';
+
+    // ── NAVBAR SCROLL ────────────────────────────────────────────────
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+        navbar.classList.toggle('scrolled', window.scrollY > 60);
+    }, { passive: true });
+
+    // ── MOBILE MENU ──────────────────────────────────────────────────
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileMenu    = document.getElementById('mobileMenu');
+    mobileMenuBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+    mobileMenu.querySelectorAll('a').forEach(a =>
+        a.addEventListener('click', () => mobileMenu.classList.add('hidden'))
+    );
+
+    // ── AUDIO PLAYER ─────────────────────────────────────────────────
+    const audio = document.getElementById('radioStream');
+    let isPlaying = false;
+
+    function togglePlay() {
+        if (!STREAM_URL) {
+            // Friendly message while stream URL is pending
+            const btn = document.getElementById('stickyPlayBtn');
+            btn.classList.add('opacity-50');
+            setTimeout(() => btn.classList.remove('opacity-50'), 300);
+            return;
+        }
+
+        if (!audio.src || audio.src === window.location.href) {
+            audio.src = STREAM_URL;
+        }
+
+        if (isPlaying) {
+            audio.pause();
+            setPlayState(false);
+        } else {
+            audio.play().catch(err => console.warn('Stream error:', err));
+            setPlayState(true);
+        }
+    }
+
+    function setPlayState(playing) {
+        isPlaying = playing;
+
+        ['mainPlayIcon', 'stickyPlayIcon'].forEach(id => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.className = playing
+                ? 'fas fa-pause text-black text-sm'
+                : 'fas fa-play text-black text-sm ml-0.5';
+        });
+
+        // Wave in sticky player
+        const wave = document.getElementById('playerWave');
+        if (wave) wave.classList.toggle('hidden', !playing);
+        if (wave) wave.classList.toggle('flex', playing);
+
+        // Wave in section player
+        const sectionWave = document.getElementById('sectionWave');
+        if (sectionWave) sectionWave.classList.toggle('wave-paused', !playing);
+    }
+
+    function setVolume(val) {
+        audio.volume = parseFloat(val);
+        document.querySelectorAll('input[type="range"]').forEach(s => s.value = val);
+    }
+
+    // ── FADE IN ON SCROLL ────────────────────────────────────────────
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    // ── SMOOTH SCROLL ────────────────────────────────────────────────
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+        a.addEventListener('click', e => {
+            e.preventDefault();
+            const target = document.querySelector(a.getAttribute('href'));
+            if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    });
+</script>
+
+</body>
+</html>
