@@ -1,0 +1,5 @@
+[[redirects]]
+  from   = "/radio-stream"
+  to     = "http://streaming01.shockmedia.com.ar:8122/stream"
+  status = 200
+  force  = true
