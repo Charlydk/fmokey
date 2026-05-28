@@ -189,32 +189,37 @@
 
     <!-- Background: artist banner with dark overlay -->
     <div class="absolute inset-0">
+        <!-- Mobile: logo centrado (imagen cuadrada, no se corta) -->
+        <img src="recursos/WhatsApp%20Image%202026-05-27%20at%2014.36.17.jpeg"
+             alt=""
+             class="block sm:hidden w-full h-full object-cover object-center opacity-10"
+             loading="eager">
+        <!-- Desktop: banner de artistas -->
         <img src="recursos/WhatsApp%20Image%202026-05-27%20at%2014.39.48.jpeg"
              alt=""
-             class="w-full h-full object-cover object-center opacity-25"
+             class="hidden sm:block w-full h-full object-cover object-center opacity-25"
              loading="eager">
-        <div class="absolute inset-0 bg-gradient-to-b from-ok-black/70 via-ok-black/50 to-ok-black"></div>
-        <!-- Subtle yellow radial glow from center -->
-        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(245,196,0,0.07)_0%,transparent_70%)]"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-ok-black/80 via-ok-black/60 to-ok-black"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(245,196,0,0.09)_0%,transparent_70%)]"></div>
     </div>
 
     <!-- Content -->
-    <div class="relative z-10 text-center px-6 max-w-4xl mx-auto pt-24">
+    <div class="relative z-10 text-center px-6 max-w-4xl mx-auto pt-28 sm:pt-24">
 
         <!-- Live badge -->
-        <div class="inline-flex items-center gap-2 bg-red-600/90 text-white text-xs font-bold px-4 py-2 rounded-full mb-10 tracking-widest uppercase">
+        <div class="inline-flex items-center gap-2 bg-red-600/90 text-white text-xs font-bold px-4 py-2 rounded-full mb-6 sm:mb-10 tracking-widest uppercase">
             <span class="w-2 h-2 bg-white rounded-full live-dot"></span>
             Transmitiendo en vivo
         </div>
 
         <!-- Station name -->
-        <h1 class="font-display text-8xl md:text-[11rem] text-white leading-none tracking-wide mb-0">
+        <h1 class="font-display text-6xl sm:text-8xl md:text-[11rem] text-white leading-none tracking-wide mb-0">
             LA 101.9
         </h1>
-        <h2 class="font-display text-5xl md:text-7xl text-[#F5C400] leading-none tracking-widest mb-6">
+        <h2 class="font-display text-4xl sm:text-5xl md:text-7xl text-[#F5C400] leading-none tracking-widest mb-4 sm:mb-6">
             RADIO OKEY
         </h2>
-        <p class="text-base md:text-lg text-white/60 mb-12 font-light tracking-wider uppercase">
+        <p class="text-sm sm:text-base md:text-lg text-white/60 mb-8 sm:mb-12 font-light tracking-wider uppercase">
             La radio oficial de los artistas
         </p>
 
