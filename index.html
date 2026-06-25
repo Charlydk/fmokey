@@ -266,16 +266,30 @@
             <div class="lg:col-span-3">
                 <div class="relative bg-ok-card rounded-2xl overflow-hidden border border-white/5" style="aspect-ratio:16/9;">
 
-                    <!-- YouTube Live embed                                      -->
-                    <!-- TODO: reemplazar VIDEO_ID por el ID del live del canal -->
-                    <!-- Canal propio: usar live_stream?channel=UC_CHANNEL_ID   -->
+                    <!-- YouTube embed — solo desktop -->
                     <iframe
                         src="https://www.youtube.com/embed/live_stream?channel=UCwQRk7_biXjgSMDSs6npp6g&autoplay=1&rel=0&modestbranding=1"
-                        class="absolute inset-0 w-full h-full"
+                        class="absolute inset-0 w-full h-full hidden sm:block"
                         frameborder="0"
                         allowfullscreen
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
                     </iframe>
+
+                    <!-- Fallback mobile: botón Ver en YouTube -->
+                    <a href="https://www.youtube.com/channel/UCwQRk7_biXjgSMDSs6npp6g/live"
+                       target="_blank" rel="noopener"
+                       class="sm:hidden absolute inset-0 flex flex-col items-center justify-center gap-5 bg-ok-card px-6 text-center">
+                        <div class="w-20 h-20 rounded-full bg-[#FF0000] flex items-center justify-center">
+                            <i class="fab fa-youtube text-white text-4xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-white font-bold text-lg mb-1">Transmisión en vivo</p>
+                            <p class="text-white/50 text-sm">Tocá para ver en YouTube</p>
+                        </div>
+                        <span class="flex items-center gap-2 bg-[#FF0000] text-white font-bold px-6 py-3 rounded-full text-sm">
+                            <i class="fab fa-youtube"></i> Ver en YouTube
+                        </span>
+                    </a>
 
                     <!-- Live badge overlay -->
                     <div class="absolute top-4 left-4 flex items-center gap-2 bg-black/60 backdrop-blur-sm px-3 py-1.5 rounded-full">
