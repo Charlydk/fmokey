@@ -266,28 +266,16 @@
             <div class="lg:col-span-3">
                 <div class="relative bg-ok-card rounded-2xl overflow-hidden border border-white/5" style="aspect-ratio:16/9;">
 
-                    <!-- Placeholder — replace with EstudioMax embed when available -->
-                    <div id="videoPlaceholder" class="absolute inset-0 flex flex-col items-center justify-center px-8 text-center">
-                        <div class="w-20 h-20 rounded-full bg-[#F5C400]/10 border-2 border-[#F5C400]/20 flex items-center justify-center mb-6">
-                            <i class="fas fa-video text-[#F5C400] text-3xl"></i>
-                        </div>
-                        <h3 class="font-display text-3xl text-white tracking-wider mb-2">TRANSMISIÓN DE VIDEO</h3>
-                        <p class="text-white/40 text-sm max-w-xs">
-                            La cámara del estudio estará disponible próximamente.
-                        </p>
-                    </div>
-
-                    <!--
-                    VIDEO EMBED — descomentar cuando tengamos la URL de EstudioMax:
+                    <!-- YouTube Live embed                                      -->
+                    <!-- TODO: reemplazar VIDEO_ID por el ID del live del canal -->
+                    <!-- Canal propio: usar live_stream?channel=UC_CHANNEL_ID   -->
                     <iframe
-                        id="videoEmbed"
-                        src="ESTUDIOSMAX_VIDEO_EMBED_URL"
+                        src="https://www.youtube.com/embed/_wQtERpHYSA?autoplay=1&mute=0&rel=0&modestbranding=1"
                         class="absolute inset-0 w-full h-full"
                         frameborder="0"
                         allowfullscreen
-                        allow="autoplay">
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
                     </iframe>
-                    -->
 
                     <!-- Live badge overlay -->
                     <div class="absolute top-4 left-4 flex items-center gap-2 bg-black/60 backdrop-blur-sm px-3 py-1.5 rounded-full">
